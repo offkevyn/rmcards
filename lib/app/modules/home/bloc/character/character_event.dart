@@ -8,10 +8,9 @@ abstract class CharacterEvent extends Equatable {
 }
 
 class LoadCharactersEvent extends CharacterEvent {
-  final int page;
   final String? search;
 
-  const LoadCharactersEvent({required this.page, this.search});
+  const LoadCharactersEvent({this.search});
 
   @override
   List<Object?> get props => [search];

@@ -22,7 +22,12 @@ class _CardListState extends State<CardList> {
   void initState() {
     super.initState();
     characterBloc = Modular.get<CharacterBloc>();
-    characterBloc.add(LoadCharactersEvent(page: 1));
+    characterBloc.add(LoadCharactersEvent());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -30,7 +35,8 @@ class _CardListState extends State<CardList> {
     return BlocBuilder<CharacterBloc, CharacterState>(
       bloc: characterBloc,
       builder: (context, state) {
-        if (state is CharacterLoadingState) {
+        if (state is CharacterLoadingState &&
+            (characterBloc.state is! CharactersLoadedState)) {
           return const Center(child: CircularProgressIndicator());
         }
         if (state is CharacterErrorState) {
@@ -83,6 +89,8 @@ class _CardListState extends State<CardList> {
                 aspectRatio = 0.68;
               }
               return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -91,10 +99,12 @@ class _CardListState extends State<CardList> {
                   mainAxisSpacing: 15,
                   crossAxisSpacing: 20,
                 ),
-                itemCount: state.characters.length,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                itemCount: state.characters.length +
+                    (characterBloc.hasReachedMax ? 0 : 1),
                 itemBuilder: (context, index) {
+                  if (index >= state.characters.length) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
                   final character = state.characters[index];
                   return CharacterCard(
                     name: character.name,

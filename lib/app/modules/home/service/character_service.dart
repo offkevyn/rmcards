@@ -2,9 +2,10 @@ import 'package:dio/dio.dart';
 
 import '../../../shared/http/rm_url.dart';
 import '../model/character_model.dart';
+import '../model/search_character_aux_model.dart';
 
 abstract class ICharacterService {
-  Future<List<CharacterModel>> getCharacters(
+  Future<SearchCharacterAuxModel> getCharacters(
     int page,
   );
 
@@ -36,16 +37,24 @@ class CharacterService implements ICharacterService {
   }
 
   @override
-  Future<List<CharacterModel>> getCharacters(int page) async {
+  Future<SearchCharacterAuxModel> getCharacters(int page) async {
     try {
       final List<CharacterModel> characters = [];
+      int count = 0;
+      int pages = 0;
       final url = HttpUrlUtil.getCharacterUrl(page: page);
 
       final response = await dio.get(
         url,
       );
 
+
       if (response.statusCode == 200) {
+      final info = response.data['info'] as Map<String, dynamic>; 
+      count = info['count'] as int;
+      pages = info['pages'] as int;
+
+
         final data = response.data;
         final results = data['results'] as List<dynamic>;
         characters.addAll(results
@@ -53,7 +62,11 @@ class CharacterService implements ICharacterService {
             .toList());
       }
 
-      return characters;
+      return SearchCharacterAuxModel(
+        characters: characters,
+        count: count,
+        pages: pages,
+      );
     } catch (e) {
       throw Exception('Failed to fetch characters: $e');
     }

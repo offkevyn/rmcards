@@ -6,6 +6,10 @@ import 'character_state.dart';
 
 class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
   final ICharacterService _characterService;
+  int _currentPage = 1;
+  int _totalPages = 0;
+
+  bool get hasReachedMax => _currentPage > _totalPages;
 
   CharacterBloc({
     required ICharacterService characterService,
@@ -19,14 +23,36 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
     LoadCharactersEvent event,
     Emitter<CharacterState> emit,
   ) async {
-    emit(CharacterLoadingState());
-    try {
-      final characters = await _characterService.getCharacters(event.page);
+    // Verificar se já chegou ao máximo ou se já está carregando
+    if (_currentPage > _totalPages && _totalPages > 0) return;
 
-      emit(CharactersLoadedState(
-        characters: characters,
-        isSearching: event.search != null,
-      ));
+    if (_currentPage == 1) {
+      emit(CharacterLoadingState());
+    }
+
+    try {
+      final result = await _characterService.getCharacters(_currentPage);
+      _totalPages = result.pages;
+      _currentPage++;
+
+      if (_currentPage == 2) {
+        emit(CharactersLoadedState(
+          characters: result.characters,
+          isSearching: event.search != null,
+        ));
+      } else {
+        final currentState = state;
+        if (currentState is CharactersLoadedState) {
+          final updatedCharacters = [
+            ...currentState.characters,
+            ...result.characters
+          ];
+          emit(CharactersLoadedState(
+            characters: updatedCharacters,
+            isSearching: event.search != null,
+          ));
+        }
+      }
     } catch (e) {
       emit(CharacterErrorState(message: e.toString()));
     }
