@@ -114,9 +114,7 @@ class _CardListState extends State<CardList> {
                   }
                   final character = state.characters[index];
                   return CharacterCard(
-                    name: character.name,
-                    status: character.status,
-                    imageUrl: character.image,
+                    character: character,
                   );
                 },
               );
