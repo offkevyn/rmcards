@@ -9,6 +9,7 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: Colors.transparent,
       title: const Image(
         image: AssetImage(ImgsApp.logo),
         width: 140,

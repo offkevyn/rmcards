@@ -50,18 +50,18 @@ class _DrawerCustomState extends State<DrawerCustom> {
       builder: (context) {
         return AlertDialog(
           surfaceTintColor: Colors.transparent,
-          backgroundColor: ColorsApp.white,
+          backgroundColor: ColorsApp.black3,
           title: const Text(
             "Sair?",
             style: TextStyle(
-              color: ColorsApp.black,
+              color: ColorsApp.gray,
               fontWeight: FontWeight.bold,
             ),
           ),
           content: const Text(
             "Tem certeza que quer sair?",
             style: TextStyle(
-              color: ColorsApp.black,
+              color: ColorsApp.gray,
             ),
           ),
           actions: [
@@ -72,7 +72,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
               child: const Text(
                 "NÃO",
                 style: TextStyle(
-                  color: ColorsApp.black,
+                  color: ColorsApp.green2,
                 ),
               ),
             ),
