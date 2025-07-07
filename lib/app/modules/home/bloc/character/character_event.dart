@@ -16,6 +16,15 @@ class LoadCharactersEvent extends CharacterEvent {
   List<Object?> get props => [search];
 }
 
+class SearchCharactersEvent extends CharacterEvent {
+  final String? search;
+
+  const SearchCharactersEvent({this.search});
+
+  @override
+  List<Object?> get props => [search];
+}
+
 class LoadCharacterByIdEvent extends CharacterEvent {
   final String id;
 
@@ -24,4 +33,3 @@ class LoadCharacterByIdEvent extends CharacterEvent {
   @override
   List<Object?> get props => [id];
 }
-

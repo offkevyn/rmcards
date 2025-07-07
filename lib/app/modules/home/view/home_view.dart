@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -22,6 +24,8 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   late final CharacterBloc characterBloc;
   final ScrollController scrollController = ScrollController();
+  final TextEditingController searchController = TextEditingController();
+  Timer? _debounceTimer;
   bool _isLoading = false;
 
   @override
@@ -34,7 +38,23 @@ class _HomeViewState extends State<HomeView> {
   @override
   void dispose() {
     scrollController.dispose();
+    searchController.dispose();
+    _debounceTimer?.cancel();
     super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    _debounceTimer?.cancel();
+
+    if (value.length >= 3) {
+      _debounceTimer = Timer(const Duration(milliseconds: 1500), () {
+        characterBloc.add(SearchCharactersEvent(search: value));
+      });
+    } else if (value.isEmpty) {
+      _debounceTimer = Timer(const Duration(milliseconds: 1000), () {
+        characterBloc.add(SearchCharactersEvent(search: null));
+      });
+    }
   }
 
   void _onScroll() {
@@ -45,8 +65,7 @@ class _HomeViewState extends State<HomeView> {
 
     if (currentScroll >= maxScroll - 500 &&
         !characterBloc.hasReachedMax &&
-        characterBloc.state is CharactersLoadedState &&
-        !(characterBloc.state as CharactersLoadedState).isSearching) {
+        characterBloc.state is CharactersLoadedState) {
       _isLoading = true;
       characterBloc.add(LoadCharactersEvent());
     }
@@ -110,9 +129,10 @@ class _HomeViewState extends State<HomeView> {
                       ),
                       const SizedBox(height: 24),
                       InputCustom(
+                        controller: searchController,
                         placeholder: 'Pesquisar personagem',
                         icon: Icons.search,
-                        onChanged: (value) {},
+                        onChanged: _onSearchChanged,
                         iconAtEnd: false,
                       ),
                       const SizedBox(height: 32),

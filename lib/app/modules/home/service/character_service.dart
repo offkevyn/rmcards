@@ -6,8 +6,9 @@ import '../model/search_character_aux_model.dart';
 
 abstract class ICharacterService {
   Future<SearchCharacterAuxModel> getCharacters(
-    int page,
-  );
+    int page, {
+    String? search,
+  });
 
   Future<List<CharacterModel>> getCharactersBySearch({
     required String name,
@@ -37,23 +38,22 @@ class CharacterService implements ICharacterService {
   }
 
   @override
-  Future<SearchCharacterAuxModel> getCharacters(int page) async {
+  Future<SearchCharacterAuxModel> getCharacters(int page,
+      {String? search}) async {
     try {
       final List<CharacterModel> characters = [];
       int count = 0;
       int pages = 0;
-      final url = HttpUrlUtil.getCharacterUrl(page: page);
+      final url = HttpUrlUtil.getCharacterUrl(page: page, name: search);
 
       final response = await dio.get(
         url,
       );
 
-
       if (response.statusCode == 200) {
-      final info = response.data['info'] as Map<String, dynamic>; 
-      count = info['count'] as int;
-      pages = info['pages'] as int;
-
+        final info = response.data['info'] as Map<String, dynamic>;
+        count = info['count'] as int;
+        pages = info['pages'] as int;
 
         final data = response.data;
         final results = data['results'] as List<dynamic>;

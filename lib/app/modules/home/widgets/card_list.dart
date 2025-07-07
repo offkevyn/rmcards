@@ -103,7 +103,14 @@ class _CardListState extends State<CardList> {
                     (characterBloc.hasReachedMax ? 0 : 1),
                 itemBuilder: (context, index) {
                   if (index >= state.characters.length) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: CircularProgressIndicator(
+                          color: ColorsApp.green4,
+                        ),
+                      ),
+                    );
                   }
                   final character = state.characters[index];
                   return CharacterCard(
