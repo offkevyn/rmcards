@@ -163,7 +163,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                       itemDrawer.name,
                       style: const TextStyle(
                         color: ColorsApp.green2,
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.w400,
                       ),
                     ),

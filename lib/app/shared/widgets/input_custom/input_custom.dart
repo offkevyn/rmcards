@@ -47,7 +47,7 @@ class InputCustom extends StatelessWidget {
               controller: controller,
               onChanged: onChanged,
               cursorColor: borderColor,
-              style: TextStyle(color: textColor, fontSize: 20),
+              style: TextStyle(color: textColor, fontSize: 16),
               decoration: InputDecoration(
                 hintText: placeholder,
                 hintStyle: TextStyle(
